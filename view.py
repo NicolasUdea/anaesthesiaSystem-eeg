@@ -1,9 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Tue May  3 09:04:26 2022
 
-@author: Maria Camila Villa,Yeimmy Morales
-"""
 import matplotlib.pyplot as plt
 from PyQt5.QtWidgets import QMainWindow
 from PyQt5.uic import loadUi
@@ -109,93 +105,120 @@ class View(QMainWindow):
     def graph_data(self, data):
         """
         Generate EEG plot by hemispheres.
-
+    
         Parameters
         ----------
         data : ndarray
         Array with EEG values ​​for both, right and left hemispheres.
-
+    
         Returns
         -------
         None.
-
+    
         """
-        f3_fz = data[0]
-        f4_fz = data[1]
+        
+        Fp1 = data[0]
+        Fp2 = data[1]
+        C3 = data[2]
+        C4 = data[3]
+        P7 = data[4]
+        P8 = data[5]
+        O1 = data[6]
+        O2 = data[7]
+        
+        #R = np.mean([Fp2, C4, P8, O2], axis=0)
+        #L = np.mean([Fp1, C3, P7, O1], axis=0)
+        
         time_eeg = np.arange(0, 5, 0.004)
 
         # Basic tab
         self.eeg_graphr2.clear()
         self.eeg_graphl2.clear()
         # f4_fz
-        self.eeg_graphr2.plot(time_eeg, f4_fz, pen=('#C7C7C7'), enableAutoRange=False)
+        self.eeg_graphr2.plot(time_eeg, Fp2 + 100, pen=('#C7C7C7'))
+        self.eeg_graphr2.plot(time_eeg, C4 + 200, pen=('#C7C7C7'))
+        self.eeg_graphr2.plot(time_eeg, P8 + 300, pen=('#C7C7C7'))
+        self.eeg_graphr2.plot(time_eeg, O2 + 400, pen=('#C7C7C7'))
         self.eeg_graphr2.setLabel('bottom', 'Time', units='s')
-        if (self.scales_2.currentIndex()==0):
-            self.eeg_graphr2.setYRange(-50, 50)
-        if (self.scales_2.currentIndex()==1):
-            self.eeg_graphr2.setYRange(-100, 100)
-        if (self.scales_2.currentIndex()==2):
-            self.eeg_graphr2.setYRange(-200, 200)
-        if (self.scales_2.currentIndex()==3):
-            self.eeg_graphr2.setYRange(-400, 400)
-        if (self.scales_2.currentIndex()==4):
-            self.eeg_graphr2.setYRange(-1000, 1000)
-        if (self.scales_2.currentIndex()==5):
-            self.eeg_graphr2.setYRange(-10000, 10000)
+        self.eeg_graphr2.show()
+        # if (self.scales_2.currentIndex()==0):
+        #     self.eeg_graphr2.setYRange(-50, 50)
+        # if (self.scales_2.currentIndex()==1):
+        #     self.eeg_graphr2.setYRange(-100, 100)
+        # if (self.scales_2.currentIndex()==2):
+        #     self.eeg_graphr2.setYRange(-200, 200)
+        # if (self.scales_2.currentIndex()==3):
+        #     self.eeg_graphr2.setYRange(-400, 400)
+        # if (self.scales_2.currentIndex()==4):
+        #     self.eeg_graphr2.setYRange(-1000, 1000)
+        # if (self.scales_2.currentIndex()==5):
+        #     self.eeg_graphr2.setYRange(-10000, 10000)
         self.eeg_graphr2.repaint()
 
         # f3_fz
-        self.eeg_graphl2.plot(time_eeg, f3_fz, pen=('#C7C7C7'))
+        self.eeg_graphl2.plot(time_eeg, Fp1 + 100, pen=('#C7C7C7'))
+        self.eeg_graphl2.plot(time_eeg, C3 + 200, pen=('#C7C7C7'))
+        self.eeg_graphl2.plot(time_eeg, P7 + 300, pen=('#C7C7C7'))
+        self.eeg_graphl2.plot(time_eeg, O1 + 400, pen=('#C7C7C7'))        
         self.eeg_graphl2.setLabel('bottom', 'Time', units='s')
-        if (self.scales_2.currentIndex()==0):
-            self.eeg_graphl2.setYRange(-50, 50)
-        if (self.scales_2.currentIndex()==1):
-            self.eeg_graphl2.setYRange(-100, 100)
-        if (self.scales_2.currentIndex()==2):
-            self.eeg_graphl2.setYRange(-200, 200)
-        if (self.scales_2.currentIndex()==3):
-            self.eeg_graphl2.setYRange(-400, 400)
-        if (self.scales_2.currentIndex()==4):
-            self.eeg_graphl2.setYRange(-1000, 1000)
-        if (self.scales_2.currentIndex()==5):
-            self.eeg_graphl2.setYRange(-10000, 10000)
+        self.eeg_graphl2.show()
+        # if (self.scales_2.currentIndex()==0):
+        #     self.eeg_graphl2.setYRange(-50, 50)
+        # if (self.scales_2.currentIndex()==1):
+        #     self.eeg_graphl2.setYRange(-100, 100)
+        # if (self.scales_2.currentIndex()==2):
+        #     self.eeg_graphl2.setYRange(-200, 200)
+        # if (self.scales_2.currentIndex()==3):
+        #     self.eeg_graphl2.setYRange(-400, 400)
+        # if (self.scales_2.currentIndex()==4):
+        #     self.eeg_graphl2.setYRange(-1000, 1000)
+        # if (self.scales_2.currentIndex()==5):
+        #     self.eeg_graphl2.setYRange(-10000, 10000)
         self.eeg_graphl2.repaint()
 
         # Advanced tab
         self.eeg_graphr.clear()
         self.eeg_graphl.clear()
         # f4_fz
-        self.eeg_graphr.plot(time_eeg, f4_fz, pen=('#C7C7C7'))
+        self.eeg_graphr.plot(time_eeg, Fp2 + 100, pen=('#C7C7C7'))
+        self.eeg_graphr.plot(time_eeg, C4 + 200, pen=('#C7C7C7'))
+        self.eeg_graphr.plot(time_eeg, P8 + 300, pen=('#C7C7C7'))
+        self.eeg_graphr.plot(time_eeg, O2 + 400, pen=('#C7C7C7'))
         self.eeg_graphr.setLabel('bottom', 'Time', units='s')
-        if (self.scales.currentIndex()==0):
-            self.eeg_graphr.setYRange(-50, 50)
-        if (self.scales.currentIndex()==1):
-            self.eeg_graphr.setYRange(-100, 100)
-        if (self.scales.currentIndex()==2):
-            self.eeg_graphr.setYRange(-200, 200)
-        if (self.scales.currentIndex()==3):
-            self.eeg_graphr.setYRange(-400, 400)
-        if (self.scales.currentIndex()==4):
-            self.eeg_graphr.setYRange(-1000, 1000)
-        if (self.scales.currentIndex()==5):
-            self.eeg_graphr.setYRange(-10000, 10000)
+        self.eeg_graphr.show()
+        # if (self.scales.currentIndex()==0):
+        #     self.eeg_graphr.setYRange(-50, 50)
+        # if (self.scales.currentIndex()==1):
+        #     self.eeg_graphr.setYRange(-100, 100)
+        # if (self.scales.currentIndex()==2):
+        #     self.eeg_graphr.setYRange(-200, 200)
+        # if (self.scales.currentIndex()==3):
+        #     self.eeg_graphr.setYRange(-400, 400)
+        # if (self.scales.currentIndex()==4):
+        #     self.eeg_graphr.setYRange(-1000, 1000)
+        # if (self.scales.currentIndex()==5):
+        #     self.eeg_graphr.setYRange(-10000, 10000)
         self.eeg_graphr.repaint()
 
         # f3_fz
-        self.eeg_graphl.plot(time_eeg, f3_fz, pen=('#C7C7C7'))
+        self.eeg_graphl.plot(time_eeg, Fp1 + 100, pen=('#C7C7C7'))
+        self.eeg_graphl.plot(time_eeg, C3 + 200, pen=('#C7C7C7'))
+        self.eeg_graphl.plot(time_eeg, P7 + 300, pen=('#C7C7C7'))
+        self.eeg_graphl.plot(time_eeg, O1 + 400, pen=('#C7C7C7'))
         self.eeg_graphl.setLabel('bottom', 'Time', units='s')
-        if (self.scales.currentIndex()==0):
-            self.eeg_graphl.setYRange(-50, 50)
-        if (self.scales.currentIndex()==1):
-            self.eeg_graphl.setYRange(-100, 100)
-        if (self.scales.currentIndex()==2):
-            self.eeg_graphl.setYRange(-200, 200)
-        if (self.scales.currentIndex()==3):
-            self.eeg_graphl.setYRange(-400, 400)
-        if (self.scales.currentIndex()==4):
-            self.eeg_graphl.setYRange(-1000, 1000)
-        if (self.scales.currentIndex()==5):
-            self.eeg_graphl.setYRange(-10000, 10000)
+        self.eeg_graphl.show()
+        # if (self.scales.currentIndex()==0):
+        #     self.eeg_graphl.setYRange(-50, 50)
+        # if (self.scales.currentIndex()==1):
+        #     self.eeg_graphl.setYRange(-100, 100)
+        # if (self.scales.currentIndex()==2):
+        #     self.eeg_graphl.setYRange(-200, 200)
+        # if (self.scales.currentIndex()==3):
+        #     self.eeg_graphl.setYRange(-400, 400)
+        # if (self.scales.currentIndex()==4):
+        #     self.eeg_graphl.setYRange(-1000, 1000)
+        # if (self.scales.currentIndex()==5):
+        #     self.eeg_graphl.setYRange(-10000, 10000)
         self.eeg_graphl.repaint()
 
     def graph_spectra(self, data):
@@ -214,12 +237,24 @@ class View(QMainWindow):
         None.
 
         """
-        power_f3 = data[0]
-        power_f4 = data[1]
+        power_Fp1 = data[0]
+        power_Fp2 = data[1]
+        power_C3 = data[2]
+        power_C4 = data[3]
+        power_P7 = data[4]
+        power_P8 = data[5]
+        power_O1 = data[6]
+        power_O2 = data[7]
         
         
-        self.img.setImage((power_f4.T)*10)
-        self.img2.setImage((power_f3.T)*10)
+        self.img.setImage((power_Fp1.T)*10)
+        self.img2.setImage((power_Fp2.T)*10)
+        self.img.setImage((power_C3.T)*10)
+        self.img2.setImage((power_C4.T)*10)
+        self.img.setImage((power_P7.T)*10)
+        self.img2.setImage((power_P8.T)*10)
+        self.img.setImage((power_O1.T)*10)
+        self.img2.setImage((power_O2.T)*10)
 
     def graph_asym(self, data):
         """
@@ -268,28 +303,37 @@ class View(QMainWindow):
         #self.f4_lcd.repaint()
 
     def light_graph(self, data):
-        powers_f3 = data[0]
-        powers_f4 = data[1]
+        power_Fp1 = data[0]
+        power_Fp2 = data[1]
+        power_C3 = data[2]
+        power_C4 = data[3]
+        power_P7 = data[4]
+        power_P8 = data[5]
+        power_O1 = data[6]
+        power_O2 = data[7]
         
-        print(powers_f3)
-        print(powers_f4)
+        # print(powers_f3)
+        # print(powers_f4)
+        
+        powers_R = np.mean([power_Fp2, power_C4, power_P8, power_O2], axis = 0)
+        powers_L = np.mean([power_Fp1, power_C3, power_P7, power_O1], axis = 0)
 
-        theta_f3 = np.mean(powers_f3[0])
-        alpha_f3 = np.mean(powers_f3[1])
-        beta_f3 = np.mean(powers_f3[2])
+        theta_R = np.mean(powers_R[0])
+        alpha_R = np.mean(powers_R[1])
+        beta_R = np.mean(powers_R[2])
         # gamma_f3 = np.mean(powers_f3[3])
 
-        theta_f4 = np.mean(powers_f4[0])
-        alpha_f4 = np.mean(powers_f4[1])
-        beta_f4 = np.mean(powers_f4[2])
+        theta_F = np.mean(powers_L[0])
+        alpha_F = np.mean(powers_L[1])
+        beta_F = np.mean(powers_L[2])
         # gamma_f4 = np.mean(powers_f4[3])
 
-        self.alpha_lcdl.display(alpha_f3)
-        self.alpha_lcdl2.display(alpha_f3)
-        self.alpha_lcdr.display(alpha_f4)
-        self.alpha_lcdr2.display(alpha_f4)
+        self.alpha_lcdl.display(alpha_R)
+        self.alpha_lcdl2.display(alpha_R)
+        self.alpha_lcdr.display(alpha_F)
+        self.alpha_lcdr2.display(alpha_F)
         
-        if alpha_f3 > beta_f3:
+        if alpha_F > beta_F:
             self.alpha_lightl.setStyleSheet('background-color: #4FA600;'
                                             'border-radius: 25px;'
                                             'border: 2px solid white')
@@ -308,7 +352,7 @@ class View(QMainWindow):
                                              'border: 2px solid white')
             #self.alpha_lcdl2.display('13-30')
 
-        if alpha_f4 > beta_f4:
+        if alpha_R > beta_R:
             self.alpha_lightr.setStyleSheet('background-color: #4FA600;'
                                             'border-radius: 25px;'
                                             'border: 2px solid white')

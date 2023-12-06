@@ -1,9 +1,4 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon May  2 09:51:28 2022
 
-@author: Maria Camila Villa, Yeimmy Morales
-"""
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtCore import QThread
 

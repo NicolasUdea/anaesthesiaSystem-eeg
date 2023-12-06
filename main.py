@@ -1,9 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Wed May  4 13:22:29 2022
 
-@author: Maria Camila Villa, Yeimmy Morales
-"""
 import sys
 from PyQt5.QtWidgets import QApplication
 from model.model import Model

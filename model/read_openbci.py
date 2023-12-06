@@ -22,7 +22,7 @@ class OpenBCI(object):
 
         """
         self.__fs = 250
-        self.__channels = 2
+        self.__channels = 8
         self.__data = np.zeros((self.__channels, 1250))  # 5 seconds
         self.__streams_EEG = resolve_stream('type', 'EEG')
 
@@ -79,10 +79,7 @@ class OpenBCI(object):
 
         if (samples is None) or  (timestamp is None):
             return
-        # path ='C:/Users/Usuario/Desktop/Nuevos registros/EEG/prueba.txt'
-        # with open(path, 'w', encoding='UTF8', newline='') as f:
-        #     writer = csv.writer(f, delimiter=',')
-        #     writer.writerow(samples)
+        
         try:
             print(samples.shape[1])
             self.__data = np.roll(self.__data, samples.shape[1])
@@ -93,16 +90,18 @@ class OpenBCI(object):
             # Fp2-Fpz
             self.__data[1, 0:samples.shape[1]] = samples[3, :]-samples[1, :]
 
-            #print(self.__data.shape)
-            # path ='C:/Users/Usuario/Desktop/Nuevos registros/EEG/prueba.txt'
-            
-            # with open(path, 'w', encoding='UTF8', newline='') as f:
-            #     writer = csv.writer(f, delimiter=',')
-            #     writer.writerow(samples.shape[1])
-
 
         except IndexError:
             print("Error making the montages")
             pass        
 
-        return self.__data[0, :].copy(), self.__data[1, :].copy()
+        return (
+        self.__data[0, :].copy(),
+        self.__data[1, :].copy(),
+        self.__data[2, :].copy(),
+        self.__data[3, :].copy(),
+        self.__data[4, :].copy(),
+        self.__data[5, :].copy(),
+        self.__data[6, :].copy(),
+        self.__data[7, :].copy()
+    )

@@ -1,9 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Mon May  2 09:43:32 2022
 
-@author: user
-"""
 
 from scipy.signal import welch as pwelch
 import numpy as np
@@ -34,7 +30,7 @@ def relative_powers(signal, fs=250, nperseg=500, noverlap=250, max_freq=50):
         total power spectrum of the EEG signal.
 
     """
-    f, pxx = pwelch(signal, fs, 'hanning', nperseg, noverlap)
+    f, pxx = pwelch(signal, fs, 'hann', nperseg, noverlap)
 
     theta = np.sum(pxx[(f <= 8) & (f > 4)], axis=0)
     alpha = np.sum(pxx[(f <= 13) & (f > 8)], axis=0)
@@ -42,8 +38,8 @@ def relative_powers(signal, fs=250, nperseg=500, noverlap=250, max_freq=50):
     gamma = np.sum(pxx[(f <= max_freq) & (f > 30)], axis=0)
 
     # Delta is not used
-    #total = np.sum(pxx[(f <= max_freq) & (f > 4)],axis=0)
-    total = pxx[(f <= max_freq) & (f > 4)]
+    total = np.sum(pxx[(f <= max_freq) & (f > 4)],axis=0)
+    #total = pxx[(f <= max_freq) & (f > 4)]
     theta_relative = theta/total
     alpha_relative = alpha/total
     beta_relative = beta/total

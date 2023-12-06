@@ -62,40 +62,71 @@ class Model(QObject):
         while self.execute_thread is True:
             while self.continue_count:
                 # Takes the data and generate the montages
-                f3, f4 = openbci.read_data()
+                Fp1, Fp2, C3, C4, P7, P8, O1, O2 = openbci.read_data()
 
                 # Calls the filtering function
-                self.f3_fz = self.filtering(f3)
-                self.f4_fz = self.filtering(f4)
+                self.Fp1 = self.filtering(Fp1)
+                self.Fp2 = self.filtering(Fp2)
+                self.C3 = self.filtering(C3)
+                self.C4 = self.filtering(C4)
+                self.P7 = self.filtering(P7)
+                self.P8 = self.filtering(P8)
+                self.O1 = self.filtering(O1)
+                self.O2 = self.filtering(O2)
 
                 # Compute the continuous wavelet transform to generate the
                 # scalogram
-                power_f4 = scalogram(self.f4_fz)
-                power_f3 = scalogram(self.f3_fz)
+                power_Fp1 = scalogram(self.Fp1)
+                power_Fp2 = scalogram(self.Fp2)
+                power_C3 = scalogram(self.C3)
+                power_C4 = scalogram(self.C4)
+                power_P7 = scalogram(self.P7)
+                power_P8 = scalogram(self.P8)
+                power_O1 = scalogram(self.O1)
+                power_O2 = scalogram(self.O2)
+                
 
                 # Power spectrum of EEG signal is calculated
-                total_power_f3, powers_f3, = relative_powers(self.f3_fz)
-                total_power_f4, powers_f4, = relative_powers(self.f4_fz)
+                total_power_Fp1, powers_Fp1, = relative_powers(self.Fp1)
+                total_power_Fp2, powers_Fp2, = relative_powers(self.Fp2)
+                total_power_C3, powers_C3, = relative_powers(self.C3)
+                total_power_C4, powers_C4, = relative_powers(self.C4)
+                total_power_P7, powers_P7, = relative_powers(self.P7)
+                total_power_P8, powers_P8, = relative_powers(self.P8)
+                total_power_O1, powers_O1, = relative_powers(self.O1)
+                total_power_O2, powers_O2, = relative_powers(self.O2)
 
                 # Asymmetry
-                subtract_power = total_power_f3-total_power_f4
-                add_power = total_power_f3+total_power_f4
-                asym = subtract_power/add_power
+                # subtract_power = total_power_f3-total_power_f4
+                # add_power = total_power_f3+total_power_f4
+                # asym = subtract_power/add_power
                 
-                print(abs(asym*100))
+                #print(abs(asym*100))
 
                 # Compute the lumped permutation entropy
                 #pe_f3 = lumped_permutation_entropy(self.f3_fz)
                 #pe_f4 = lumped_permutation_entropy(self.f4_fz)
 
                 # Send the signals created
-                self.eeg_data.emit(np.array([self.f3_fz, self.f4_fz]))
-                self.spectra_data.emit(np.array([power_f3, power_f4]))
-                self.asym_data.emit(asym)
+                self.eeg_data.emit(np.array([self.Fp1, self.Fp2,
+                                             self.C3, self.C4,
+                                             self.P7, self.P8,
+                                             self.O1, self.O2]))
+                self.spectra_data.emit(np.array([power_Fp1, power_Fp2,
+                                                 power_C3, power_C4,
+                                                 power_P7, power_P8,
+                                                 power_O1, power_O2]))
+                #self.asym_data.emit(asym)
                 #self.lpe_data.emit(np.array([pe_f3, pe_f4]))
-                self.light_data.emit(np.array([powers_f3, powers_f4]))
+                self.light_data.emit(np.array([power_Fp1, power_Fp2,
+                                                 power_C3, power_C4,
+                                                 power_P7, power_P8,
+                                                 power_O1, power_O2]))
                 #self.light_data.emit(np.array([f3, f4]))
-                self.bar_data.emit(np.array([powers_f3, powers_f4]))
+                self.bar_data.emit(np.array([power_Fp1, power_Fp2,
+                                                 power_C3, power_C4,
+                                                 power_P7, power_P8,
+                                                 power_O1, power_O2]))
                 time.sleep(0.2)
 
         # emit the finished signal when the loop is done

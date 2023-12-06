@@ -8,7 +8,6 @@ Created on Fri Jun 21 15:18:37 2019
 
 from pyOpenBCI import OpenBCICyton
 from pylsl import StreamInfo, StreamOutlet
-
 import numpy as np
 from serial.tools import list_ports
 import csv
