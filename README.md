@@ -1,4 +1,4 @@
-# Anestesia
+## anaesthesiaSystem-eeg
 
 # Real time EEG signal processing and visualization system for patients during general anaesthesia
 
@@ -82,15 +82,11 @@ pip install pyqtgraph==0.10.0
 
 In the file `ptime.py` that is in the folder `anaconda3\lib\site-packages\pyqtgraph`, the line 24 needs to change for `cstart = systime.time()`
 
-In the same file, the lines 13 and 17 need to change `collections` for `collections.abc`
-
 - Install PyWavelets
-  
--  Install PyQt5
-
--  Install scipy
-
-- Install matplotlib
 
 
 ## Authors
+
+[@yeimmygit11](https://github.com/yeimmygit11)
+
+[@mariacvilla](https://github.com/mariacvilla)

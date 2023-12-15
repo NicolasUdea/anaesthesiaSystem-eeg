@@ -8,6 +8,7 @@ Created on Fri Jun 21 15:18:37 2019
 
 from pyOpenBCI import OpenBCICyton
 from pylsl import StreamInfo, StreamOutlet
+
 import numpy as np
 from serial.tools import list_ports
 import csv
@@ -24,9 +25,9 @@ class DataServer(object):
     def lsl_streamers(self,sample):
         data = np.array(sample.channels_data)*self.SCALE_FACTOR_EEG
         self.outlet_eeg.push_sample(data)
-      #'C:/Users/Usuario/Desktop/Registros/valeria.txt'    
+      #'C:/Users/user/Desktop/Nuevos registros/EEG/prueba_santi.txt'    
         try:
-            path ='C:/Users/Usuario/Desktop/Registros/rosa_Anestesia.txt'
+            path =r'"C:\Users\Proyecto anestesia\OneDrive\Escritorio\Nuevos registros\EEG\prueba\prueba.txt"'
             
             with open(path, 'a', encoding='UTF8', newline='') as f:
                 writer = csv.writer(f, delimiter=',')

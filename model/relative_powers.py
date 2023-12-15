@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-
-
 from scipy.signal import welch as pwelch
 import numpy as np
 
@@ -31,6 +28,9 @@ def relative_powers(signal, fs=250, nperseg=500, noverlap=250, max_freq=50):
 
     """
     f, pxx = pwelch(signal, fs, 'hann', nperseg, noverlap)
+    
+    indice_maximo = np.argmax(pxx)
+    f_pico = f[indice_maximo]
 
     theta = np.sum(pxx[(f <= 8) & (f > 4)], axis=0)
     alpha = np.sum(pxx[(f <= 13) & (f > 8)], axis=0)
@@ -46,7 +46,7 @@ def relative_powers(signal, fs=250, nperseg=500, noverlap=250, max_freq=50):
     gamma_relative = gamma/total
 
     result = np.asarray([theta_relative, alpha_relative, beta_relative,
-                         gamma_relative])
+                         gamma_relative,f_pico])
 
 
     return total, result

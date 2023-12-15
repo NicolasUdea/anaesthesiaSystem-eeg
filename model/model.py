@@ -4,23 +4,33 @@ Created on Mon May  2 09:17:08 2022
 
 @author: Maria Camila Villa,Yeimmy Morales
 """
+
+
 import numpy as np
+import scipy.signal as signal
+import time
+
 from PyQt5.QtCore import QObject
 from PyQt5.QtCore import pyqtSignal
-import scipy.signal as signal
+
 from model.filters import filter_design
-import model.read_openbci
+
 from model.wavelet import wavelet
 from model.relative_powers import relative_powers
 from model.scalogram import scalogram
-#from model.espect import spect as scalogram
 from model.lumped_entropy import lumped_permutation_entropy
-openbci = model.read_openbci.OpenBCI()
-import time
+
+
+
 
 
 class Model(QObject):
     # Signals to communicate between objects
+    
+    '''
+    Clase definida como el back de la interfaz, creacion de variables de 
+    interes.
+    '''
     finished = pyqtSignal()
     eeg_data = pyqtSignal(object)
     spectra_data = pyqtSignal(object)
@@ -29,9 +39,14 @@ class Model(QObject):
     light_data = pyqtSignal(object)
     bar_data = pyqtSignal(object)
 
-    def __init__(self):
+    def __init__(self,openbci):
+        
         """
-        filters are designed and start data inlet.
+        filters are designed and start data inlet. lineal filters designed
+        as follow:
+            
+            lowpass = cutfreq = 4 Hz
+            Highpass = cutfreq = 25 Hz
 
         Returns
         -------
@@ -49,6 +64,8 @@ class Model(QObject):
                                              hicutoff=0, revfilt=1)
         order, self.lowpass = filter_design(self.__fs, locutoff=0,
                                             hicutoff=25, revfilt=0)
+        self.__openbci = openbci
+
 
     def run(self):
         """
@@ -61,73 +78,46 @@ class Model(QObject):
         """
         while self.execute_thread is True:
             while self.continue_count:
+                
+                #timpo inicial en segundo ti
+                
                 # Takes the data and generate the montages
-                Fp1, Fp2, C3, C4, P7, P8, O1, O2 = openbci.read_data()
+                self.f3_fz, self.f4_fz = self.__openbci.read_data()
 
                 # Calls the filtering function
-                self.Fp1 = self.filtering(Fp1)
-                self.Fp2 = self.filtering(Fp2)
-                self.C3 = self.filtering(C3)
-                self.C4 = self.filtering(C4)
-                self.P7 = self.filtering(P7)
-                self.P8 = self.filtering(P8)
-                self.O1 = self.filtering(O1)
-                self.O2 = self.filtering(O2)
+                self.f3_fz = self.filtering(self.f3_fz)
+                self.f4_fz = self.filtering(self.f4_fz)
 
                 # Compute the continuous wavelet transform to generate the
                 # scalogram
-                power_Fp1 = scalogram(self.Fp1)
-                power_Fp2 = scalogram(self.Fp2)
-                power_C3 = scalogram(self.C3)
-                power_C4 = scalogram(self.C4)
-                power_P7 = scalogram(self.P7)
-                power_P8 = scalogram(self.P8)
-                power_O1 = scalogram(self.O1)
-                power_O2 = scalogram(self.O2)
-                
+                power_f4 = scalogram(self.f4_fz)
+                power_f3 = scalogram(self.f3_fz)
 
                 # Power spectrum of EEG signal is calculated
-                total_power_Fp1, powers_Fp1, = relative_powers(self.Fp1)
-                total_power_Fp2, powers_Fp2, = relative_powers(self.Fp2)
-                total_power_C3, powers_C3, = relative_powers(self.C3)
-                total_power_C4, powers_C4, = relative_powers(self.C4)
-                total_power_P7, powers_P7, = relative_powers(self.P7)
-                total_power_P8, powers_P8, = relative_powers(self.P8)
-                total_power_O1, powers_O1, = relative_powers(self.O1)
-                total_power_O2, powers_O2, = relative_powers(self.O2)
+                total_power_f3, powers_f3 = relative_powers(self.f3_fz)
+                total_power_f4, powers_f4 = relative_powers(self.f4_fz)
 
                 # Asymmetry
-                # subtract_power = total_power_f3-total_power_f4
-                # add_power = total_power_f3+total_power_f4
-                # asym = subtract_power/add_power
-                
-                #print(abs(asym*100))
+                subtract_power = total_power_f3-total_power_f4
+                add_power = total_power_f3+total_power_f4
+                asym = subtract_power/add_power
 
                 # Compute the lumped permutation entropy
-                #pe_f3 = lumped_permutation_entropy(self.f3_fz)
-                #pe_f4 = lumped_permutation_entropy(self.f4_fz)
+                pe_f3 = 0#lumped_permutation_entropy(self.f3_fz)
+                pe_f4 = 0#lumped_permutation_entropy(self.f4_fz)
 
                 # Send the signals created
-                self.eeg_data.emit(np.array([self.Fp1, self.Fp2,
-                                             self.C3, self.C4,
-                                             self.P7, self.P8,
-                                             self.O1, self.O2]))
-                self.spectra_data.emit(np.array([power_Fp1, power_Fp2,
-                                                 power_C3, power_C4,
-                                                 power_P7, power_P8,
-                                                 power_O1, power_O2]))
-                #self.asym_data.emit(asym)
-                #self.lpe_data.emit(np.array([pe_f3, pe_f4]))
-                self.light_data.emit(np.array([power_Fp1, power_Fp2,
-                                                 power_C3, power_C4,
-                                                 power_P7, power_P8,
-                                                 power_O1, power_O2]))
-                #self.light_data.emit(np.array([f3, f4]))
-                self.bar_data.emit(np.array([power_Fp1, power_Fp2,
-                                                 power_C3, power_C4,
-                                                 power_P7, power_P8,
-                                                 power_O1, power_O2]))
-                time.sleep(0.2)
+                self.eeg_data.emit(np.array([self.f3_fz, self.f4_fz]))
+                self.spectra_data.emit(np.array([power_f3, power_f4]))
+                self.asym_data.emit(asym)
+                self.lpe_data.emit(np.array([pe_f3, pe_f4]))
+                self.light_data.emit(np.array([powers_f3, powers_f4]))
+                self.bar_data.emit(np.array([powers_f3, powers_f4]))
+                
+                #timpo final en segundo tf
+                
+                # 1 - (tf - ti)
+                time.sleep(1)
 
         # emit the finished signal when the loop is done
         self.finished.emit()
@@ -144,7 +134,7 @@ class Model(QObject):
         """
         # provide a bool run condition for the class
         self.continue_count = True
-        openbci.start_data()
+        self.__openbci.start_data()
 
     def stop(self):
         """
@@ -156,7 +146,7 @@ class Model(QObject):
 
         """
         self.continue_count = False
-        openbci.stop_data()
+        self.__openbci.stop_data()
 
     def finish_thread(self):
         """
@@ -191,4 +181,5 @@ class Model(QObject):
 
         # Aplly the Wavelet filter
         #data_filtered = wavelet(data_lp)
-        return data_lp
+        data_filtered = data_lp
+        return data_filtered
