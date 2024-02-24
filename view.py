@@ -206,8 +206,8 @@ class View(QMainWindow):
         None.
 
         """
-        power_f3 = data[0]
-        power_f4 = data[1]
+        power_f3 = data[:,0,:]
+        power_f4 = data[:,1,:]
 
         self.img.setImage(power_f4.T)
         self.img2.setImage(power_f3.T)
@@ -227,34 +227,16 @@ class View(QMainWindow):
 
         """
         asym = data
-        #self.asym_graph.clear()
-        #self.asym_graph.plot(np.abs(asym*100), pen=('w'))
-        #self.asym_graph.repaint()
-        #self.asym_graph.setLabel('left', 'Asymmetry')
-        #self.asym_graph.hideAxis('bottom')
-        #self.asym_graph.setYRange(0, 100)
 
         self.asym_lcd.display(np.mean(np.abs(asym*100)))
         self.asym_lcd.repaint()
 
 
     def light_graph(self, data):
-        powers_f3 = data[0]
-        powers_f4 = data[1]
-
-        theta_f3 = np.mean(powers_f3[0])
-        alpha_f3 = np.mean(powers_f3[1])
-        beta_f3 = np.mean(powers_f3[2])
-        # gamma_f3 = np.mean(powers_f3[3])
-        f3 = powers_f3[4]
-
-        theta_f4 = np.mean(powers_f4[0])
-        alpha_f4 = np.mean(powers_f4[1])
-        beta_f4 = np.mean(powers_f4[2])
-        # gamma_f4 = np.mean(powers_f4[3])
-        f4 = powers_f4[4]
-
-    
+        
+        
+        f3 = data[0][4]
+        f4 = data[1][4]
 
         self.alpha_lcdl.display(f3)
         self.alpha_lcdl2.display(f3)

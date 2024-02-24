@@ -25,7 +25,6 @@ class RandData(object):
             self.mysample = [rand()*50, rand()*50, rand()*50, rand()*50, rand()*50, rand()*50, rand()*50, rand()*50]
             # now send it and wait for a bit
             self.outlet.push_sample(self.mysample)
-            print(self.mysample)
             time.sleep(0.01)
 
 if __name__ == '__main__':

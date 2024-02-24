@@ -36,6 +36,6 @@ def scalogram(montage):
     scales = 1/(frequencies*sampling_period)
     time_seconds = 5
     [coef, freqs] = pywt.cwt(montage[:fs*time_seconds], scales,
-                             'cmor1.0-1.0', sampling_period)
+                             'cmor1.0-1.0', sampling_period, axis = 1)
     power = (np.abs(coef))**2
     return power

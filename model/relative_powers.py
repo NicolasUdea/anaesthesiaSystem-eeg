@@ -27,18 +27,16 @@ def relative_powers(signal, fs=250, nperseg=500, noverlap=250, max_freq=50):
         total power spectrum of the EEG signal.
 
     """
-    f, pxx = pwelch(signal, fs, 'hann', nperseg, noverlap)
+    f, pxx = pwelch(signal, fs, 'hann', nperseg, noverlap, axis=1)
     
-    indice_maximo = np.argmax(pxx)
-    f_pico = f[indice_maximo]
-
-    theta = np.sum(pxx[(f <= 8) & (f > 4)], axis=0)
-    alpha = np.sum(pxx[(f <= 13) & (f > 8)], axis=0)
-    beta = np.sum(pxx[(f <= 30) & (f > 13)], axis=0)
-    gamma = np.sum(pxx[(f <= max_freq) & (f > 30)], axis=0)
+    f_pico = f[np.argmax(pxx, axis=1)]
+    theta = np.sum(pxx[:, (f <= 8) & (f > 4)], axis=1)
+    alpha = np.sum(pxx[:,(f <= 13) & (f > 8)], axis=1)
+    beta = np.sum(pxx[:,(f <= 30) & (f > 13)], axis=1)
+    gamma = np.sum(pxx[:,(f <= max_freq) & (f > 30)], axis=1)
 
     # Delta is not used
-    total = np.sum(pxx[(f <= max_freq) & (f > 4)],axis=0)
+    total = np.sum(pxx[:,(f <= max_freq) & (f > 4)], axis=1)
     #total = pxx[(f <= max_freq) & (f > 4)]
     theta_relative = theta/total
     alpha_relative = alpha/total
@@ -46,7 +44,7 @@ def relative_powers(signal, fs=250, nperseg=500, noverlap=250, max_freq=50):
     gamma_relative = gamma/total
 
     result = np.asarray([theta_relative, alpha_relative, beta_relative,
-                         gamma_relative,f_pico])
+                         gamma_relative, f_pico]).T
 
 
     return total, result

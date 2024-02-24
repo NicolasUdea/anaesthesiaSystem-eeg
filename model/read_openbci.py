@@ -62,61 +62,22 @@ class OpenBCI(object):
 
         """
         self.Z = []
-        samples, timestamp = self.__inlet.pull_chunk()
+        samples, _ = self.__inlet.pull_chunk()
         
         samples = np.transpose(np.asanyarray(samples))
-                
-        print(samples.ndim)
 
-        # try:
-        #     # perform the ohm-law operation.
-        #     # V = received rms voltage. i = device current = 6 nA
-        #     for i in range(0, 3):
-        #         Z_i = ((samples[i])*np.sqrt(2))/(6*pow(10, -9))
-        #         self.Z.append(Z_i/1000)
-        #         # print("impedancia: " + str(Z_i))
-        # except:
-        #     pass
-
-        if (samples is None) or  (timestamp is None):
-            print("Recibido None")
+        if (samples is None) :
             return
-        # path ='C:/Users/Usuario/Desktop/Nuevos registros/EEG/prueba.txt'
-        # with open(path, 'w', encoding='UTF8', newline='') as f:
-        #     writer = csv.writer(f, delimiter=',')
-        #     writer.writerow(samples)
-        elif (samples.ndim == 1):
-            print("incompleto")
-            return self.__data[0, :].copy(), self.__data[1, :].copy()
         
         try:
-            
-            print(samples.shape)
 
-            
-            #samples = np.concatenate((samples,np.zeros((8,100))),axis=1)
-            
-            #print(samples.shape)
-            
-            print(samples.shape[1])
             self.__data = np.roll(self.__data, samples.shape[1])
 
-            # BIS
-            # Fp1-Fpz
-            self.__data[0, 0:samples.shape[1]] = samples[2, :]-samples[1, :]
-            # Fp2-Fpz
-            self.__data[1, 0:samples.shape[1]] = samples[3, :]-samples[1, :]
-
-            #print(self.__data.shape)
-            # path ='C:/Users/Usuario/Desktop/Nuevos registros/EEG/prueba.txt'
+            self.__data[:self.__channels,:samples.shape[1]] = samples[:self.__channels, :]
             
-            # with open(path, 'w', encoding='UTF8', newline='') as f:
-            #     writer = csv.writer(f, delimiter=',')
-            #     writer.writerow(samples.shape[1])
-
 
         except IndexError:
             print("Error making the montages")
             pass        
 
-        return self.__data[0, :].copy(), self.__data[1, :].copy()
+        return self.__data

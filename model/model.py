@@ -7,18 +7,14 @@ Created on Mon May  2 09:17:08 2022
 
 
 import numpy as np
-import scipy.signal as signal
 import time
-
+from scipy.signal import filtfilt
 from PyQt5.QtCore import QObject
 from PyQt5.QtCore import pyqtSignal
 
 from model.filters import filter_design
-
-from model.wavelet import wavelet
 from model.relative_powers import relative_powers
 from model.scalogram import scalogram
-from model.lumped_entropy import lumped_permutation_entropy
 
 
 
@@ -60,9 +56,9 @@ class Model(QObject):
         print("looking for an EEG stream...")
 
         # designed filters
-        order, self.highpass = filter_design(self.__fs, locutoff=4,
+        _, self.highpass = filter_design(self.__fs, locutoff=4,
                                              hicutoff=0, revfilt=1)
-        order, self.lowpass = filter_design(self.__fs, locutoff=0,
+        _, self.lowpass = filter_design(self.__fs, locutoff=0,
                                             hicutoff=25, revfilt=0)
         self.__openbci = openbci
 
@@ -82,37 +78,32 @@ class Model(QObject):
                 #timpo inicial en segundo ti
                 
                 # Takes the data and generate the montages
-                self.f3_fz, self.f4_fz = self.__openbci.read_data()
+                self.__electrodes_data = self.__openbci.read_data()
 
                 # Calls the filtering function
-                self.f3_fz = self.filtering(self.f3_fz)
-                self.f4_fz = self.filtering(self.f4_fz)
+                self.filtered_electrodes = self.filtering(self.__electrodes_data)
+                
 
                 # Compute the continuous wavelet transform to generate the
                 # scalogram
-                power_f4 = scalogram(self.f4_fz)
-                power_f3 = scalogram(self.f3_fz)
+                power = scalogram(self.filtered_electrodes)
+                
 
                 # Power spectrum of EEG signal is calculated
-                total_power_f3, powers_f3 = relative_powers(self.f3_fz)
-                total_power_f4, powers_f4 = relative_powers(self.f4_fz)
+                total_power, powers = relative_powers(self.filtered_electrodes)
 
                 # Asymmetry
-                subtract_power = total_power_f3-total_power_f4
-                add_power = total_power_f3+total_power_f4
+                subtract_power = total_power[0]-total_power[1]
+                add_power = total_power[0]+total_power[1]
                 asym = subtract_power/add_power
 
-                # Compute the lumped permutation entropy
-                pe_f3 = 0#lumped_permutation_entropy(self.f3_fz)
-                pe_f4 = 0#lumped_permutation_entropy(self.f4_fz)
 
                 # Send the signals created
-                self.eeg_data.emit(np.array([self.f3_fz, self.f4_fz]))
-                self.spectra_data.emit(np.array([power_f3, power_f4]))
+                self.eeg_data.emit(np.array(self.filtered_electrodes))
+                self.spectra_data.emit(np.array(power))
                 self.asym_data.emit(asym)
-                self.lpe_data.emit(np.array([pe_f3, pe_f4]))
-                self.light_data.emit(np.array([powers_f3, powers_f4]))
-                self.bar_data.emit(np.array([powers_f3, powers_f4]))
+                self.light_data.emit(np.array(powers))
+                self.bar_data.emit(np.array(powers))
                 
                 #timpo final en segundo tf
                 
@@ -176,8 +167,8 @@ class Model(QObject):
 
         """
         # apply the linear filters
-        data_hp = signal.filtfilt(self.highpass, 1, data)
-        data_lp = signal.filtfilt(self.lowpass, 1, data_hp)
+        data_hp = filtfilt(self.highpass, 1, data, axis=1)
+        data_lp = filtfilt(self.lowpass, 1, data_hp, axis=1)
 
         # Aplly the Wavelet filter
         #data_filtered = wavelet(data_lp)
