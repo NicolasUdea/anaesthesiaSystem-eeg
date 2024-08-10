@@ -8,7 +8,6 @@ Created on Sun Mar 29 21:33:36 2020
 import numpy as np
 from pylsl import StreamInlet
 from pylsl import resolve_stream
-import csv
 
 
 class OpenBCI(object):

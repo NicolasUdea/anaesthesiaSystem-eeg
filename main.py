@@ -3,49 +3,36 @@
 Created on Wed May  4 13:22:29 2022
 
 @author: Maria Camila Villa, Yeimmy Morales
+@reviewer: Nicolas Vargas Flores
 """
-import sys
 from PyQt5.QtWidgets import QApplication
+from controller import Controller
 from model.model import Model
 from view import View
-from controller import Controller
-
 import model.read_openbci
+import sys
 
 
-
-class Main(object):
+class Main:
+    """
+    Initialize the QT application and assign the model and the view.
+    """
     def __init__(self):
-        """
-        To initialize the QT application and assign the model and the view.
-
-        Returns
-        -------
-        None.
-
-        """
-        self.__app = QApplication(sys.argv)
-        self.__view = View()
-        
+        self._app = QApplication(sys.argv)
+        self._view = View()
         openbci = model.read_openbci.OpenBCI()
-        
-        self.__system = Model(openbci)
-        
-        self.__controller = Controller(self.__view, self.__system)
-        self.__view.set_controller(self.__controller)
+        self._system = Model(openbci)
+        self._controller = Controller(self._view, self._system)
+        self._view.set_controller(self._controller)
 
     def main(self):
         """
-        To initialize the system.
-
-        Returns
-        -------
-        None.
-
+        Initialize the system.
         """
-        self.__view.show()
-        sys.exit(self.__app.exec_())
+        self._view.show()
+        sys.exit(self._app.exec_())
 
 
-M = Main()
-M.main()
+if __name__ == "__main__":
+    main_instance = Main()
+    main_instance.main()

@@ -1,4 +1,4 @@
-## anaesthesiaSystem-eeg
+### anaesthesiaSystem-eeg
 
 # Real time EEG signal processing and visualization system for patients during general anaesthesia
 
@@ -8,10 +8,59 @@ Unlike the commercial equipment used nowadays for anesthesia monitoring, this wo
 
 **This project aims to support the monitoring of anesthetic depth.**
 
-:pushpin: Run the server_openbci.py file on a console before running the GUI to do serial communication.
 
-:pushpin: You can run the project using the OpenBCI simulator instead of the real board. To do so, run the SimOpenBCI.py file on a console before running the GUI
+# Requirements
+- [🔗](https://shop.openbci.com/products/cyton-biosensing-board-8-channel?variant=38958638542)OpenBCI Cyton Biosensing Board (8-channels).
 
+- OpenBCI programmable dongle (for bluetooth communication).
+
+- AA batteries.
+
+- Gold Cup Electrodes.
+
+- Conductive Paste.
+
+- Python 3.9
+
+
+
+# Installation
+1. Install Python 3.9
+```javascript
+sudo apt-get update
+sudo apt-get install python3.9 python3.9-venv python3.9-dev
+```
+2. Create and activate a virtual environment:
+```javascript
+python3.9 -m venv anaesthesia-env
+source anaesthesia-env/bin/activate
+```
+3. Install required libraries:
+```javascript
+pip install pyOpenBCI scipy numpy matplotlib pyserial bitstring xmltodict requests pylsl pyqtgraph==0.10.0 PyWavelets
+```
+4. Install CYTON DONGLE DRIVERS
+- [🔗](https://openbci.com/downloads) Download link
+5. Modify ptime.py in pyqtgraph:  
+- Locate the file ptime.py in the folder anaconda3/lib/site-packages/pyqtgraph
+- Change line 24 to:
+```javascript
+cstart = systime.time()
+```
+
+# Running the Project
+1. Run the OpenBCI server:
+```javascript
+py server_openbci.py
+```
+2. Run the OpenBCI simulator (optional):
+```javascript
+py SimOpenBCI.py
+```
+3. Run the main application:
+```javascript
+py main.py
+```
 
 ## Signal filtering
 - Linear filters:
@@ -51,42 +100,12 @@ The electrodes are placed using the 10-20 international system, but it is only u
 ![Image](https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/EEG_10-10_system_with_additional_information.svg/512px-EEG_10-10_system_with_additional_information.svg.png)
 
 
-# Requirements
-- [🔗](https://shop.openbci.com/products/cyton-biosensing-board-8-channel?variant=38958638542)OpenBCI Cyton Biosensing Board (8-channels).
-
-- OpenBCI programmable dongle (for bluetooth communication).
-
-- AA batteries.
-
-- Gold Cup Electrodes.
-
-- Conductive Paste.
-
-- Python.
-
-- [🔗](https://openbci.com/downloads) Install OpenBCI GUI and CYTON DONGLE DRIVERS.
-
-- Install pyOpenBCI.
-
-- Install pyserial:
-```javascript
-pip install numpy pyserial bitstring xmltodict requests
-```
-
-- Install pylsl.
-
-- Install pyqtgraph 2016 version to work with Qt 5.9.7:
-```javascript
-pip install pyqtgraph==0.10.0
-```
-
-In the file `ptime.py` that is in the folder `anaconda3\lib\site-packages\pyqtgraph`, the line 24 needs to change for `cstart = systime.time()`
-
-- Install PyWavelets
-
 
 ## Authors
 
 [@yeimmygit11](https://github.com/yeimmygit11)
 
 [@mariacvilla](https://github.com/mariacvilla)
+
+## Reviewer
+[@NicolasUdea](https://github.com/NicolasUdea)

@@ -2,13 +2,17 @@
 """
 Created on Mon May  2 09:51:28 2022
 
-@author: Maria Camila Villa, Yeimmy Morales
+Optimized by GitHub Copilot
 """
-from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtCore import QThread
+
+from PyQt5.QtCore import pyqtSignal, QThread
 
 
-class Controller(object):
+class Controller:
+    """
+    Controller class to manage the interaction between the view and the model.
+    """
+
     # Signals to communicate between objects
     eeg_data = pyqtSignal(object)
     spectra_data = pyqtSignal(object)
@@ -19,11 +23,7 @@ class Controller(object):
 
     def __init__(self, view, model):
         """
-        Assign the model and the view.
-
-        Generate a worker thread and connect the signals and slots.
-        The thread is made for the model class. Connects the model data
-        to the view.
+        Initialize the Controller with the given view and model.
 
         Parameters
         ----------
@@ -31,11 +31,6 @@ class Controller(object):
             View class.
         model : class
             Model class.
-
-        Returns
-        -------
-        None.
-
         """
         self.__model = model
         self.__view = view
@@ -50,7 +45,7 @@ class Controller(object):
         # You can use worker objects by moving them to the thread
         self.worker.moveToThread(self.thread)
 
-        # When the Start signal is emit, begins execution of the thread
+        # When the Start signal is emitted, begins execution of the thread
         # by calling run()
         self.thread.started.connect(self.worker.run)
 
@@ -65,58 +60,37 @@ class Controller(object):
         self.worker.eeg_data.connect(self.__view.graph_data)
         self.worker.spectra_data.connect(self.__view.graph_spectra)
         self.worker.asym_data.connect(self.__view.graph_asym)
-        #self.worker.lpe_data.connect(self.__view.graph_lpe)
+        # self.worker.lpe_data.connect(self.__view.graph_lpe)
         self.worker.light_data.connect(self.__view.light_graph)
         self.worker.bar_data.connect(self.__view.bar_graph)
 
     def worker_thread(self):
         """
-        Starts the worker thread.
-
-        Returns
-        -------
-        None.
-
+        Start the worker thread.
         """
-        # Start the thread
         self.thread.start()
 
     def start(self):
         """
-        Calls the start function of the model and the worker_thead function
+        Call the start function of the model and the worker_thread function
         of the controller.
-
-        Returns
-        -------
-        None.
-
         """
         self.__model.start()
         self.worker_thread()
 
     def stop(self):
         """
-        Calls the stop function of the model.
-
-        Returns
-        -------
-        None.
-
+        Call the stop function of the model.
         """
         self.__model.stop()
         print('Stop Data')
 
     def finish_thread(self):
         """
-        Calls the finish_thread function of the model and stop the worker.
-        Also exits the thread and wait until it actually exit.
-
-        Returns
-        -------
-        None.
-
+        Call the finish_thread function of the model and stop the worker.
+        Also exit the thread and wait until it actually exits.
         """
-        if self.thread.isRunning() is True:
+        if self.thread.isRunning():
             print("Stop worker thread")
             self.__model.finish_thread()
             self.worker.stop()

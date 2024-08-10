@@ -7,9 +7,6 @@ Created on Sat Jul  8 13:00:43 2023
 
 from scipy import signal
 import numpy as np
-import librosa
-import librosa.display
-import matplotlib.pyplot as plt
 
 def spect(montage):
     """

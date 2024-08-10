@@ -1,53 +1,68 @@
-
 # -*- coding: utf-8 -*-
 """
 Created on Fri Jun 21 15:18:37 2019
 
-@author: user
+This module handles the data streaming from the OpenBCI Cyton board to LSL (Lab Streaming Layer).
+
+Author: user
 """
 
+import numpy as np
+import csv
 from pyOpenBCI import OpenBCICyton
 from pylsl import StreamInfo, StreamOutlet
-
-import numpy as np
 from serial.tools import list_ports
-import csv
 
-serial_openBCI = 'DQ0081';
+SERIAL_OPENBCI = 'DQ0081'
 
-class DataServer(object):
+
+class DataServer:
+    """
+    DataServer class to handle the streaming of EEG data from OpenBCI to LSL.
+    """
 
     def __init__(self):
-        self.SCALE_FACTOR_EEG = (4500000)/24/(2**23-1) #uV/count
-        self.info_eeg = StreamInfo('OpenBCIEEG', 'EEG', 8, 250, 'float32', 'OpenBCItestEEG')
-        self.outlet_eeg = StreamOutlet(self.info_eeg)
-        
-    def lsl_streamers(self,sample):
-        data = np.array(sample.channels_data)*self.SCALE_FACTOR_EEG
-        self.outlet_eeg.push_sample(data)
-      #'C:/Users/user/Desktop/Nuevos registros/EEG/prueba_santi.txt'    
+        self._scale_factor_eeg = 4500000 / 24 / (2**23 - 1)  # uV/count
+        self._info_eeg = StreamInfo('OpenBCIEEG', 'EEG', 8, 250, 'float32', 'OpenBCItestEEG')
+        self._outlet_eeg = StreamOutlet(self._info_eeg)
+
+    def lsl_streamers(self, sample):
+        """
+        Stream EEG data to LSL and save to a CSV file.
+
+        Args:
+            sample: The sample data from OpenBCI.
+        """
+        data = np.array(sample.channels_data) * self._scale_factor_eeg
+        self._outlet_eeg.push_sample(data)
+
+        # Save data to a CSV file
+        path = r"C:\Users\ahoga\OneDrive\Escritorio\Anestesia\prueba.txt"
         try:
-            path =r'"C:\Users\Proyecto anestesia\OneDrive\Escritorio\Nuevos registros\EEG\prueba\prueba.txt"'
-            
             with open(path, 'a', encoding='UTF8', newline='') as f:
                 writer = csv.writer(f, delimiter=',')
                 writer.writerow(data)
-        except:
-            pass 
-    
-Lista_puertos = list_ports.comports();
-print (Lista_puertos)
-for serial_device in Lista_puertos:
-    code_serial = serial_device.serial_number 
-    if code_serial != None:
-        if code_serial.startswith(serial_openBCI):
-    
-            board = OpenBCICyton(port=serial_device.device, daisy=False)
-            Data = DataServer()
-    
-            board.start_stream(Data.lsl_streamers)
-            Data.read_data()
-            print('')
+        except IOError as e:
+            print(f"Error writing to file: {e}")
 
-print('No hay dispositivo OpenBCI, conectar y volver a iniciar el programa')
-input('Presione enter para finalizar ...')
+
+def main():
+    """
+    Main function to initialize the OpenBCI board and start streaming data.
+    """
+    lista_puertos = list_ports.comports()
+    print(lista_puertos)
+    for serial_device in lista_puertos:
+        code_serial = serial_device.serial_number
+        if code_serial and code_serial.startswith(SERIAL_OPENBCI):
+            board = OpenBCICyton(port=serial_device.device, daisy=False)
+            data_server = DataServer()
+            board.start_stream(data_server.lsl_streamers)
+            return
+
+    print('No OpenBCI device found. Please connect and restart the program.')
+    input('Press Enter to exit...')
+
+
+if __name__ == "__main__":
+    main()

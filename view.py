@@ -4,12 +4,12 @@ Created on Tue May  3 09:04:26 2022
 
 @author: Maria Camila Villa,Yeimmy Morales
 """
-import matplotlib.pyplot as plt
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as fig_canvas
 from PyQt5.QtWidgets import QMainWindow
 from PyQt5.uic import loadUi
+import matplotlib.pyplot as plt
 import numpy as np
 import pyqtgraph as pg
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as fig_canvas
 
 
 class View(QMainWindow):
